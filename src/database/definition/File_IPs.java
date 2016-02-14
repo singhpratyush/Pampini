@@ -1,3 +1,7 @@
+/*
+ * Relates file packet to IPs it is available on
+ */
+
 package database.definition;
 
 import java.util.*;

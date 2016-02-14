@@ -1,3 +1,7 @@
+/*
+ * Just a class to store fixed field names for JSON
+ */
+
 package database.definition;
 
 public class Field_name

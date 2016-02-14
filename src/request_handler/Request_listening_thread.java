@@ -1,3 +1,6 @@
+/*
+ * Definition of request listening thread
+ */
 package request_handler;
 
 import java.io.IOException;
@@ -10,6 +13,7 @@ public class Request_listening_thread extends Thread
 	private ServerSocket socket;
 	private boolean success;
 	
+	//Mr. Constructor
 	public Request_listening_thread(int port)
 	{
 		this.port = port;
@@ -25,6 +29,7 @@ public class Request_listening_thread extends Thread
 		}
 	}
 	
+	//Is port working?
 	public boolean is_good()
 	{
 		return this.success;
@@ -32,6 +37,7 @@ public class Request_listening_thread extends Thread
 	
 	public void run()
 	{
+		//Forever
 		while(true)
 		{
 			try

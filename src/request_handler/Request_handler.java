@@ -1,3 +1,7 @@
+/*
+ * Class definition for server side request handler
+ */
+
 package request_handler;
 
 import java.io.DataInputStream;
@@ -24,6 +28,7 @@ public class Request_handler extends Thread
 	private JSONObject recieved_data, data_to_send;
 	private int uid, request_type;
 
+	//Mr. Constructor
 	public Request_handler(Socket client_socket)
 	{
 		this.client_socket = client_socket;
@@ -45,6 +50,7 @@ public class Request_handler extends Thread
 		}
 	}
 	
+	//What to do when thread starts
 	public void run()
 	{
 		switch(this.request_type)
@@ -90,17 +96,19 @@ public class Request_handler extends Thread
 		}
 	}
 	
+	//Just a reply that client has reached right place
 	private void say_hi()
 	{
 		try
 		{
-			this.output_stream.writeUTF("Yes, this is the port.");
+			this.output_stream.writeUTF("HI");
 		} catch ( IOException e )
 		{
 			e.printStackTrace();
 		}
 	}
 	
+	//Execute file search request
 	private void search()
 	{
 		try
@@ -119,6 +127,7 @@ public class Request_handler extends Thread
 		}
 	}
 	
+	//Execute request to get available files
 	private void get_available_files()
 	{
 		try
@@ -137,6 +146,7 @@ public class Request_handler extends Thread
 		}
 	}
 	
+	//Execute request that asks to mark that a packet has been downloaded
 	private void mark_complete_packet_download()
 	{
 		try
@@ -150,6 +160,7 @@ public class Request_handler extends Thread
 		}
 	}
 
+	//Provide client a packet to download
 	private void serve_packet_request()
 	{
 		try
@@ -168,6 +179,7 @@ public class Request_handler extends Thread
 		}
 	}
 
+	//Execute request to add new file
 	private void new_upload()
 	{
 		String file_name = null;
@@ -207,6 +219,7 @@ public class Request_handler extends Thread
 		}
 	}
 
+	//Execute login request
 	private void login()
 	{
 		String phash = null;

@@ -1,3 +1,7 @@
+/*
+ * Just a class to store field names for JSON
+ */
+
 package request_handler;
 
 public class JSON_fields

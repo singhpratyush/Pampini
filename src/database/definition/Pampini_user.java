@@ -1,3 +1,6 @@
+/*
+ * Definition for user
+ */
 package database.definition;
 
 import org.json.JSONException;

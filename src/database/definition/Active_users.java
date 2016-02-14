@@ -1,3 +1,7 @@
+/*
+ *Class definition for Active_users
+ *Relates user with IP its active on.
+*/
 package database.definition;
 
 import org.json.*;

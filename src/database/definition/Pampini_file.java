@@ -1,3 +1,6 @@
+/*
+ * Definition for a shared file
+ */
 package database.definition;
 
 import org.json.JSONException;

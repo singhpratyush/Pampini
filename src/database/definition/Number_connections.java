@@ -1,3 +1,7 @@
+/*
+ * Relates user to number of connections it is currently using
+ */
+
 package database.definition;
 
 import org.json.JSONObject;
