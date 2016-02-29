@@ -2,7 +2,9 @@ package database.operation;
 
 import database.definition.Pampini_file;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+import request_handler.JSON_fields;
 import util.config;
 
 import java.sql.*;
@@ -65,7 +67,47 @@ public class Querry {
 
     //Get best host to download one of the packets from JSON array 'arr'
     public static JSONObject get_host_for_packets(int fid, JSONArray arr) {
-        return null;
+        try {
+            Connection c = DriverManager.getConnection(config.jdbc, config.jdbc_username, config.jdbc_password);
+            Statement stmt = c.createStatement();
+
+            String sql = "set search_path to file;\n";
+
+            stmt.executeUpdate(sql);
+
+            sql = "select * from (select partno, ip from ip where fid = " + fid + " and ip in (";
+
+            for (int i = 0; i < arr.length(); i++)
+                try {
+                    sql = sql + arr.getJSONObject(i).toString();
+                    if (i != arr.length() - 1)
+                        sql = sql + ",";
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            sql = sql + ") ) as a natural join active_users as order by no_conn limit 1;";
+
+            ResultSet rs = stmt.executeQuery(sql);
+
+            JSONObject ret = new JSONObject();
+
+            ret.put(JSON_fields.To_send_data.uid, rs.getInt("uid"));
+            ret.put(JSON_fields.To_send_data.IP, rs.getString("ip"));
+            ret.put(JSON_fields.To_send_data.no_conn, rs.getInt("no_conn"));
+            ret.put(JSON_fields.To_send_data.partno, rs.getInt("partno"));
+            ret.put(JSON_fields.To_send_data.fid, fid);
+
+            return ret;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
     //Get JSON array of files matching search_parameter
@@ -127,6 +169,8 @@ public class Querry {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        //Not complete yet
 
     }
 
