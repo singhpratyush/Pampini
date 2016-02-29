@@ -9,7 +9,7 @@ public class Main {
     static Request_listening_thread master_listener;
 
     //Printing any message
-    private static void log(String a) {
+    public static void log(String a) {
         System.out.println(a);
     }
 
