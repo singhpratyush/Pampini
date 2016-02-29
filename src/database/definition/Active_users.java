@@ -9,7 +9,14 @@ import org.json.JSONObject;
 
 public class Active_users {
     private int uid;
+    private int no_conn;
     private String IP;
+
+    public Active_users(int uid, String IP, int no_conn) {
+        this.uid = uid;
+        this.IP = IP;
+        this.no_conn = no_conn;
+    }
 
     public int get_user_id() {
         return this.uid;
@@ -17,6 +24,10 @@ public class Active_users {
 
     public String get_IP() {
         return this.IP;
+    }
+
+    public void decrement_connections() {
+        this.no_conn--;
     }
 
     public JSONObject get_JSON() {

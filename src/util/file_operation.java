@@ -10,7 +10,7 @@ public class file_operation {
 
     public static int get_new_file_id() {
         int fid = -1;
-        Connection c = null;
+        Connection c;
         try {
             Class.forName("org.postgresql.Driver");
             c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/pampini", "pampini", "pampini");
@@ -18,7 +18,7 @@ public class file_operation {
 
             String command = "set search_path to file;";
             statement.executeUpdate(command);
-            command = "select * from (select * from allfid except select * from fid) as available order by fid limit 1;";
+            command = "select * from (select * from allfid except select fid from pampini_file) as available order by fid limit 1;";
             ResultSet rs = statement.executeQuery(command);
             return rs.getInt("fid");
         } catch (Exception e) {

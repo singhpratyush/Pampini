@@ -12,16 +12,12 @@ import java.util.ArrayList;
 public class File_IPs {
     private int fid;
     private int partno;
-    private String IPs;
     private ArrayList<String> arrip;
 
-    public File_IPs(int fid, int partno, String IPs) {
+    public File_IPs(int fid, int partno, ArrayList<String> arrip) {
         this.fid = fid;
         this.partno = partno;
-        this.IPs = IPs;
-        this.arrip = new ArrayList<String>();
-        for (String ret : this.IPs.split(","))
-            this.arrip.add(ret);
+        this.arrip = new ArrayList<>(arrip);
     }
 
     public int get_file_id() {
