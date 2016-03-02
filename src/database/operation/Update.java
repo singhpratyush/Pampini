@@ -30,8 +30,20 @@ public class Update {
     }
 
     //Mark user as offline
-    public static void mark_inactive(int uid) {
+    public static boolean mark_inactive(int uid) {
+        try {
+            Connection c = DriverManager.getConnection(config.jdbc, config.jdbc_username, config.jdbc_password);
+            Statement stmt = c.createStatement();
 
+            String operation = "set search path to file;\n" +
+                    "delete grom active_users where uid = " + uid + ";";
+
+            stmt.executeUpdate(operation);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     //Add new file to download section and update corresponding databases
@@ -40,6 +52,22 @@ public class Update {
     }
 
     //Mark that packet_no for fid is available at client_IP from uid
-    public static void mark_packet_download(int fid, int uid, int packet_no, SocketAddress client_IP) {
+    public static boolean mark_packet_download(int fid, int packet_no, SocketAddress client_IP) {
+        try {
+            Connection c = DriverManager.getConnection(config.jdbc, config.jdbc_username, config.jdbc_password);
+            Statement stmt = c.createStatement();
+
+            String operation = "set search path to file;\n" +
+                    " insert into file_ips values(" +
+                    fid + "," + packet_no + "," + client_IP.toString() +
+                    ");";
+
+            stmt.executeUpdate(operation);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+
     }
 }
