@@ -16,27 +16,21 @@ import static main.Main.log;
 public class Querry {
     //Validate login credentials
     public static boolean login(int uid, String phash) {
-
-        ResultSet rc;
-
         try {
             Connection c = DriverManager.getConnection(config.jdbc, config.jdbc_username, config.jdbc_password);
             Statement stmt = c.createStatement();
 
-            String operation = String.format("set search_path to file;\nselect phash from user where uid = %d;", uid);
+            String sql = "set search_path to file;\n" +
+                    "select phash from users where uid = " + uid + ")";
 
-            rc = stmt.executeQuery(operation);
+            ResultSet rs = stmt.executeQuery(sql);
+
+            if (rs.getString("phash").matches(phash))
+                return true;
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
-        try {
-            String phash_org = rc.getString("phash");
-            rc.close();
-            return phash.equals(phash_org);
-        } catch (SQLException e) {
-            return false;
-        }
+        return false;
     }
 
     //Fetch file details from database
@@ -47,9 +41,9 @@ public class Querry {
             Connection c = DriverManager.getConnection(config.jdbc, config.jdbc_username, config.jdbc_password);
             Statement stmt = c.createStatement();
 
-            String operation = String.format("set search_path to file;\nselect * from file where fif = %d;", fid);
+            String sql = String.format("set search_path to file;\nselect * from file where fif = %d;", fid);
 
-            rc = stmt.executeQuery(operation);
+            rc = stmt.executeQuery(sql);
 
             return new Pampini_file(rc.getInt("fid"), rc.getString("name"), rc.getInt("uploaderid"), rc.getDate("udate"), rc.getTime("utime"), rc.getInt("nsharer"), rc.getInt("ndloader"), rc.getInt("type"), rc.getLong("file_size"), rc.getLong("packet_size"), rc.getInt("no_packets"));
 
@@ -71,11 +65,8 @@ public class Querry {
             Connection c = DriverManager.getConnection(config.jdbc, config.jdbc_username, config.jdbc_password);
             Statement stmt = c.createStatement();
 
-            String sql = "set search_path to file;\n";
-
-            stmt.executeUpdate(sql);
-
-            sql = "select * from (select partno, ip from ip where fid = " + fid + " and ip in (";
+            String sql = "set search_path to files;\n" +
+                    "select * from (select partno, ip from ip where fid = " + fid + " and ip in (";
 
             for (int i = 0; i < arr.length(); i++)
                 try {
@@ -86,7 +77,7 @@ public class Querry {
                     e.printStackTrace();
                 }
 
-            sql = sql + ") ) as a natural join active_users as order by no_conn limit 1;";
+            sql = sql + ") ) as a natural join active_users order by no_conn limit 1;";
 
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -148,10 +139,18 @@ public class Querry {
             exit(1);
         }
 
-        //For table allfid
-        String sql = "set search_path to file;" +
-                "create table if not exists allfid\n" +
-                "(fid integer primary key);";
+        //Setting search_path
+        String sql = "set search_path to file;\n";
+        try {
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            exit(1);
+        }
+
+        //For table availfid
+        sql = "create table if not exists availfid\n" +
+                "(fid integer primary key not null);";
 
         try {
             stmt.executeUpdate(sql);
@@ -160,16 +159,34 @@ public class Querry {
             exit(1);
         }
 
-        sql = "";
-        for (int i = 0; i < 1000; i++)
-            sql = sql + "insert into table allfid values(" + i + ");\n";
+        for (int j = 0; j < 10; j++) {
+            sql = "";
+            for (int i = 0; i < 1000; i++)
+                sql = sql + "insert into table availfid values(" + String.valueOf(j) + String.valueOf(i) + ");\n";
+            try {
+                stmt.executeUpdate(sql);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
 
+        //For table users
         try {
+            sql = "create table if not exists(\n" +
+                    "uid            integer         primary key not null," +
+                    "fname          varchar(30)     not null," +
+                    "lname          varchar(30)     not null," +
+                    "sex            char(1)         not null," +
+                    "phash          VARCHAR(225)    not null," +
+                    "jbatch         char(4)         not null," +
+                    "branchcode     char(2)         not null," +
+                    "dpiccode       integer         unique not NULL" +
+                    ");";
+
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         //Not complete yet
 
     }

@@ -13,12 +13,12 @@ public class file_operation {
         Connection c;
         try {
             Class.forName("org.postgresql.Driver");
-            c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/pampini", "pampini", "pampini");
+            c = DriverManager.getConnection(config.jdbc, config.jdbc_username, config.jdbc_password);
             Statement statement = c.createStatement();
 
             String command = "set search_path to file;";
             statement.executeUpdate(command);
-            command = "select * from (select * from allfid except select fid from pampini_file) as available order by fid limit 1;";
+            command = "select * from (select * from availfid except select fid from files) as available order by fid limit 1;";
             ResultSet rs = statement.executeQuery(command);
             return rs.getInt("fid");
         } catch (Exception e) {
