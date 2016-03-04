@@ -172,7 +172,7 @@ public class Querry {
 
         //For table users
         try {
-            sql = "create table if not exists(\n" +
+            sql = "create table if not exists users(\n" +
                     "uid            integer         primary key not null," +
                     "fname          varchar(30)     not null," +
                     "lname          varchar(30)     not null," +
@@ -181,6 +181,27 @@ public class Querry {
                     "jbatch         char(4)         not null," +
                     "branchcode     char(2)         not null," +
                     "dpiccode       integer         unique not NULL" +
+                    ");";
+
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        //For table files
+        try {
+            sql = "create table if not EXISTS files(\n" +
+                    "fid            INTEGER         primary key not null," +
+                    "uploaderid     integer         not null FOREIGN KEY REFERENCES(users.uid)," +
+                    "udate          DATE            not null," +
+                    "utime          TIME            not null," +
+                    "nsharer        integer         not null," +
+                    "ndloader       integer         not null," +
+                    "ftype          SMALLINT        not null," +
+                    "filesize       biginteger      not null," +
+                    "pacetsize      biginteger      not null," +
+                    "nopackets      INTEGER         not null," +
+                    "fname          varchar(50)     not NULL" +
                     ");";
 
             stmt.executeUpdate(sql);
