@@ -192,7 +192,7 @@ public class Querry {
         try {
             sql = "create table if not EXISTS files(\n" +
                     "fid            INTEGER         primary key not null," +
-                    "uploaderid     integer         not null FOREIGN KEY REFERENCES(users.uid)," +
+                    "uploaderid     integer         FOREIGN KEY REFERENCES(users.uid)," +
                     "udate          DATE            not null," +
                     "utime          TIME            not null," +
                     "nsharer        integer         not null," +
@@ -212,7 +212,7 @@ public class Querry {
         //For table active_users
         try {
             sql = "create table if not exists active users(\n" +
-                    "uid            INTEGER         FOREIGN key REFERENCES (users.uid) not null," +
+                    "uid            INTEGER         FOREIGN key REFERENCES (users.uid)," +
                     "ip             varchar(21)     primary key not null," +
                     "noconn         SMALLINT        not null" +
                     ");";
@@ -220,6 +220,15 @@ public class Querry {
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+
+        //For table ip
+        try {
+            sql = "create table if not exists ip(\n" +
+                    "fid            integer         FOREIGN KEY REFERENCES (files.fid)," +
+                    "partno         INTEGER         not null," +
+                    "ip             vachar(21)      FOREIGN KEY REFERENCES (active_users.ip)" +
+                    ");";
         }
 
         //Not complete yet
