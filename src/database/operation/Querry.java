@@ -208,6 +208,20 @@ public class Querry {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        //For table active_users
+        try {
+            sql = "create table if not exists active users(\n" +
+                    "uid            INTEGER         FOREIGN key REFERENCES (users.uid) not null," +
+                    "ip             varchar(21)     primary key not null," +
+                    "noconn         SMALLINT        not null" +
+                    ");";
+
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         //Not complete yet
 
     }
