@@ -229,6 +229,10 @@ public class Querry {
                     "partno         INTEGER         not null," +
                     "ip             vachar(21)      FOREIGN KEY REFERENCES (active_users.ip)" +
                     ");";
+
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         //Not complete yet
