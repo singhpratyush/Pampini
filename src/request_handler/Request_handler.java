@@ -86,6 +86,10 @@ public class Request_handler extends Thread {
                 this.search();
                 break;
 
+            case 8:
+                //Get all files by a user
+                this.get_files_by_user();
+
         }
     }
 
@@ -192,26 +196,27 @@ public class Request_handler extends Thread {
         String phash = null;
         try {
             phash = this.recieved_data.getString(JSON_fields.Request_data.phash);
-            boolean is_correct_login = Querry.login(this.uid, phash);
-
-            if (is_correct_login != true) {
-                this.data_to_send = new JSONObject();
-                this.data_to_send.put(JSON_fields.To_send_data.status, is_correct_login);
-                this.output_stream.writeUTF(this.data_to_send.toString());
-                return;
+        } catch (JSONException e1) {
+            e1.printStackTrace();
+            try {
+                this.data_to_send.append("status", 1);
+            } catch (JSONException e2) {
+                e2.printStackTrace();
             }
-            Update.mark_active(this.uid, this.client_IP);
-            this.data_to_send = new JSONObject();
-            /*
-			 *Some more retrievals of data sent by client from JSON file...
-			 * 
-			*/
-            this.data_to_send.put(JSON_fields.To_send_data.status, is_correct_login);
-            this.output_stream.writeUTF(this.data_to_send.toString());
+        }
+        try {
+            this.data_to_send.append("status", (Querry.login(this.uid, phash) ? 0 : 1));
         } catch (JSONException e) {
             e.printStackTrace();
-        } catch (IOException f) {
-            f.printStackTrace();
+        }
+    }
+
+    private void get_files_by_user() {
+        //Not complete
+        try {
+            int uid = this.recieved_data.getInt("uid");
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 }
