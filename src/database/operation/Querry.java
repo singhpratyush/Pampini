@@ -93,12 +93,10 @@ public class Querry {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
         } catch (JSONException e) {
             e.printStackTrace();
-            return null;
         }
-
+        return null;
     }
 
     //Get JSON array of files matching search_parameter
@@ -121,7 +119,7 @@ public class Querry {
 
         Connection c = null;
         try {
-            c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/pampini", "pampini", "pampini");
+            c = DriverManager.getConnection(config.jdbc, config.jdbc_username, config.jdbc_password);
         } catch (SQLException e) {
             log("Database Check : Unable to connect to local database, exiting.");
             e.printStackTrace();
@@ -129,7 +127,7 @@ public class Querry {
         }
         log("Database Check : Connected to local database.");
 
-        //Creating statements
+        //Creating statement
         Statement stmt = null;
         try {
             stmt = c.createStatement();
@@ -234,9 +232,5 @@ public class Querry {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        //Not complete yet
-
     }
-
 }
