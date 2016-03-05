@@ -203,6 +203,7 @@ public class Request_handler extends Thread {
             } catch (JSONException e2) {
                 e2.printStackTrace();
             }
+            return;
         }
         try {
             this.data_to_send.append("status", (Querry.login(this.uid, phash) ? 0 : 1));
@@ -213,10 +214,18 @@ public class Request_handler extends Thread {
 
     private void get_files_by_user() {
         //Not complete
+        int uid = -1;
         try {
-            int uid = this.recieved_data.getInt("uid");
+            uid = this.recieved_data.getInt("uid_querried");
         } catch (JSONException e) {
             e.printStackTrace();
+            try {
+                this.data_to_send.append("status", 1);
+            } catch (JSONException e2) {
+                e2.printStackTrace();
+            }
+            return;
         }
+        JSONArray files = Querry.get_files_by_user(uid);
     }
 }

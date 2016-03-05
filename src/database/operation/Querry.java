@@ -8,6 +8,7 @@ import request_handler.JSON_fields;
 import util.config;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 import static java.lang.System.exit;
 import static main.Main.log;
@@ -25,8 +26,11 @@ public class Querry {
 
             ResultSet rs = stmt.executeQuery(sql);
 
-            if (rs.getString("phash").matches(phash))
+            if (rs.getString("phash").matches(phash)) {
+                rs.close();
                 return true;
+            }
+            rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -45,8 +49,9 @@ public class Querry {
 
             rc = stmt.executeQuery(sql);
 
-            return new Pampini_file(rc.getInt("fid"), rc.getString("name"), rc.getInt("uploaderid"), rc.getDate("udate"), rc.getTime("utime"), rc.getInt("nsharer"), rc.getInt("ndloader"), rc.getInt("type"), rc.getLong("file_size"), rc.getLong("packet_size"), rc.getInt("no_packets"));
-
+            Pampini_file file = new Pampini_file(rc.getInt("fid"), rc.getString("name"), rc.getInt("uploaderid"), rc.getDate("udate"), rc.getTime("utime"), rc.getInt("nsharer"), rc.getInt("ndloader"), rc.getInt("type"), rc.getLong("file_size"), rc.getLong("packet_size"), rc.getInt("no_packets"));
+            rc.close();
+            return file;
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -88,6 +93,8 @@ public class Querry {
             ret.put(JSON_fields.To_send_data.no_conn, rs.getInt("no_conn"));
             ret.put(JSON_fields.To_send_data.partno, rs.getInt("partno"));
             ret.put(JSON_fields.To_send_data.fid, fid);
+
+            rs.close();
 
             return ret;
 
@@ -232,5 +239,25 @@ public class Querry {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static JSONArray get_files_by_user(int uid) {
+        try {
+            ArrayList<JSONObject> files = new ArrayList<JSONObject>();
+            Connection c = DriverManager.getConnection(config.jdbc, config.jdbc_username, config.jdbc_password);
+            Statement stmt = c.createStatement();
+            String sql = "set search_path to file;\n" +
+                    "select * from files where uploaderid = " + uid + ";";
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next())
+                files.add((new Pampini_file(rs.getInt("fid"), rs.getString("fname"), rs.getInt("uploaderid"), rs.getDate("udate"), rs.getTime("utime"), rs.getInt("nsharer"), rs.getInt("ndloader"), rs.getInt("ftype"), rs.getLong("filesize"), rs.getLong("packetsize"), rs.getInt("nopackets"))).get_JSON());
+            rs.close();
+
+            return new JSONArray(files);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
