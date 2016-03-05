@@ -82,7 +82,10 @@ public class Update {
             String operation = "set search path to file;\n" +
                     " insert into file_ips values(" +
                     fid + "," + packet_no + "," + client_IP.toString() +
-                    ");";
+                    ");\n";
+
+            operation = operation +
+                    "alter table files set nsharer = nsharer+1 where fid = " + fid + ";";
 
             stmt.executeUpdate(operation);
             return true;

@@ -16,6 +16,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.Date;
 
 public class Request_handler extends Thread {
     private Socket client_socket;
@@ -91,7 +92,7 @@ public class Request_handler extends Thread {
     //Just a reply that client has reached right place
     private void say_hi() {
         try {
-            this.output_stream.writeUTF("HI");
+            this.output_stream.writeUTF(String.valueOf((new Date()).getTime()));
         } catch (IOException e) {
             e.printStackTrace();
         }
