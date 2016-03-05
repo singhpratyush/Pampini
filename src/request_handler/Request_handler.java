@@ -132,7 +132,7 @@ public class Request_handler extends Thread {
         try {
             int fid = this.recieved_data.getInt(JSON_fields.Request_data.file_id);
             int packet_no = this.recieved_data.getInt(JSON_fields.Request_data.packet_no);
-            Update.mark_packet_download(fid, this.uid, packet_no, this.client_IP);
+            Update.mark_packet_download(fid, packet_no, this.client_IP);
         } catch (JSONException e) {
             e.printStackTrace();
         }
