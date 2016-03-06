@@ -39,6 +39,7 @@ public class Field_name {
         static final String jbatch = "jbatch";
         static final String branchcode = "branchcode";
         static final String dpiccode = "dppiccode";
+        static final String karma = "karma";
     }
 
     public class Number_connections {

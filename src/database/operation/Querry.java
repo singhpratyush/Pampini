@@ -313,7 +313,8 @@ public class Querry {
                     "",
                     rs.getInt("jbatch"),
                     rs.getInt("branchcode"),
-                    rs.getInt("dpiccode")
+                    rs.getInt("dpiccode"),
+                    rs.getInt("karma")
             );
             rs.close();
 

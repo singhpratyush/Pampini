@@ -7,11 +7,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Pampini_user {
-    private int uid, jbatch, branchcode, dpiccode;
+    private int uid, jbatch, branchcode, dpiccode, karma;
     private String fname, lname, phash;
     private char sex;
 
-    public Pampini_user(int uid, String fname, String lname, char sex, String phash, int jbatch, int branchcode, int dpiccode) {
+    public Pampini_user(int uid, String fname, String lname, char sex, String phash, int jbatch, int branchcode, int dpiccode, int karma) {
         this.uid = uid;
         this.fname = fname;
         this.lname = lname;
@@ -20,6 +20,7 @@ public class Pampini_user {
         this.jbatch = jbatch;
         this.branchcode = branchcode;
         this.dpiccode = dpiccode;
+        this.karma = karma;
     }
 
     public int get_user_id() {
@@ -69,6 +70,7 @@ public class Pampini_user {
             obj.put(Field_name.Pampani_user.jbatch, this.jbatch);
             obj.put(Field_name.Pampani_user.branchcode, this.branchcode);
             obj.put(Field_name.Pampani_user.dpiccode, this.dpiccode);
+            obj.put(Field_name.Pampani_user.karma, this.karma);
         } catch (JSONException e) {
             e.printStackTrace();
         }
