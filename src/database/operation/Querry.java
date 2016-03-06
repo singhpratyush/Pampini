@@ -50,7 +50,7 @@ public class Querry {
 
             rc = stmt.executeQuery(sql);
 
-            Pampini_file file = new Pampini_file(rc.getInt("fid"), rc.getString("name"), rc.getInt("uploaderid"), rc.getDate("udate"), rc.getTime("utime"), rc.getInt("nsharer"), rc.getInt("ndloader"), rc.getInt("type"), rc.getLong("file_size"), rc.getLong("packet_size"), rc.getInt("no_packets"));
+            Pampini_file file = new Pampini_file(rc.getInt("fid"), rc.getString("name"), rc.getInt("uploaderid"), rc.getDate("udate"), rc.getTime("utime"), rc.getInt("nsharer"), rc.getInt("ndloader"), rc.getInt("type"), rc.getLong("file_size"), rc.getLong("packet_size"), rc.getInt("no_packets"), rc.getInt("popularity"));
             rc.close();
             return file;
         } catch (SQLException e) {
@@ -62,7 +62,38 @@ public class Querry {
 
     //Get JSON array of files available for downloading
     public static JSONArray get_downloadable_files(int page_number, int sort_type) {
-        return null;
+        JSONArray arr = null;
+        try {
+            Connection c = DriverManager.getConnection(config.jdbc, config.jdbc_username, config.jdbc_password);
+            Statement stmt = c.createStatement();
+
+            String sql = "set search_path to file;\n" +
+                    "select fid from files order by ";
+            if (sort_type == 0)
+                sql = sql + "udate, utime";
+            else
+                sql = sql + "popularity";
+
+            sql = sql + ";";
+
+            ResultSet rs = stmt.executeQuery(sql);
+
+            ArrayList<JSONObject> arrlist = new ArrayList<JSONObject>();
+
+            int currpos = 0;
+            while (rs.next()) {
+                JSONObject temp = get_file_by_id(rs.getInt("fid")).get_JSON();
+                if (currpos >= page_number * 5)
+                    arrlist.add(temp);
+                currpos++;
+                if (currpos >= (page_number + 1) * 5)
+                    break;
+            }
+            arr = new JSONArray(arrlist);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return arr;
     }
 
     //Get best host to download one of the packets from JSON array 'arr'
@@ -207,7 +238,8 @@ public class Querry {
                     "filesize       biginteger      not null," +
                     "pacetsize      biginteger      not null," +
                     "nopackets      INTEGER         not null," +
-                    "fname          varchar(50)     not NULL" +
+                    "fname          varchar(50)     not NULL," +
+                    "popularity     INTEGER         not null" +
                     ");";
 
             stmt.executeUpdate(sql);
@@ -252,7 +284,7 @@ public class Querry {
             ResultSet rs = stmt.executeQuery(sql);
 
             while (rs.next())
-                files.add((new Pampini_file(rs.getInt("fid"), rs.getString("fname"), rs.getInt("uploaderid"), rs.getDate("udate"), rs.getTime("utime"), rs.getInt("nsharer"), rs.getInt("ndloader"), rs.getInt("ftype"), rs.getLong("filesize"), rs.getLong("packetsize"), rs.getInt("nopackets"))).get_JSON());
+                files.add((new Pampini_file(rs.getInt("fid"), rs.getString("fname"), rs.getInt("uploaderid"), rs.getDate("udate"), rs.getTime("utime"), rs.getInt("nsharer"), rs.getInt("ndloader"), rs.getInt("ftype"), rs.getLong("filesize"), rs.getLong("packetsize"), rs.getInt("nopackets"), rs.getInt("popularity"))).get_JSON());
             rs.close();
 
             return new JSONArray(files);
@@ -314,7 +346,8 @@ public class Querry {
                     rs.getInt("ftype"),
                     rs.getLong("filesize"),
                     rs.getLong("packetSize"),
-                    rs.getInt("nopackets")
+                    rs.getInt("nopackets"),
+                    rs.getInt("popularity")
             );
             rs.close();
         } catch (SQLException e) {

@@ -27,6 +27,7 @@ public class Field_name {
         static final String utime = "utime";
         static final String file_size = "file_size";
         static final String packet_size = "packet_size";
+        static final String popularity = "popularity";
     }
 
     public class Pampani_user {

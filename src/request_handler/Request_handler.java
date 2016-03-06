@@ -277,7 +277,7 @@ public class Request_handler extends Thread {
         file_id = util.file_operation.get_new_file_id();
         packet_size = util.file_operation.get_packet_size(file_size);
         no_packets = util.file_operation.get_number_packets(file_size);
-        Pampini_file new_upload = new Pampini_file(file_id, file_name, this.uid, upload_date, upload_time, nsharer, ndloader, type, file_size, packet_size, no_packets);
+        Pampini_file new_upload = new Pampini_file(file_id, file_name, this.uid, upload_date, upload_time, nsharer, ndloader, type, file_size, packet_size, no_packets, 0);
         database.operation.Update.add_new_file(new_upload);
         try {
             this.data_to_send.put(JSON_fields.To_send_data.fid, file_id);

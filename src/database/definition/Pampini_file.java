@@ -7,13 +7,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Pampini_file {
-    private int fid, uploaderid, nsharer, ndloader, type, no_packets;
+    private int fid, uploaderid, nsharer, ndloader, type, no_packets, popularity;
     private String name;
     private java.sql.Date udate;
     private java.sql.Time utime;
     private long packet_size, file_size;
 
-    public Pampini_file(int fid, String name, int uploaderid, java.sql.Date udate, java.sql.Time utime, int nsharer, int ndloader, int type, long file_size, long packet_size, int no_packets) {
+    public Pampini_file(int fid, String name, int uploaderid, java.sql.Date udate, java.sql.Time utime, int nsharer, int ndloader, int type, long file_size, long packet_size, int no_packets, int popularity) {
         this.fid = fid;
         this.name = name;
         this.uploaderid = uploaderid;
@@ -25,6 +25,7 @@ public class Pampini_file {
         this.file_size = file_size;
         this.packet_size = packet_size;
         this.no_packets = no_packets;
+        this.popularity = popularity;
     }
 
     public int get_file_id() {
@@ -71,6 +72,10 @@ public class Pampini_file {
         return this.utime;
     }
 
+    public int get_popularity() {
+        return this.popularity;
+    }
+
     public JSONObject get_JSON() {
         JSONObject obj = new JSONObject();
 
@@ -85,6 +90,7 @@ public class Pampini_file {
             obj.put(Field_name.Pampini_file.type, this.type);
             obj.put(Field_name.Pampini_file.file_size, this.file_size);
             obj.put(Field_name.Pampini_file.packet_size, this.packet_size);
+            obj.put(Field_name.Pampini_file.popularity, this.popularity);
         } catch (JSONException e) {
             e.printStackTrace();
         }
