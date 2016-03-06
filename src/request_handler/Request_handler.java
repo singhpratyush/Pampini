@@ -110,7 +110,7 @@ public class Request_handler extends Thread {
     }
 
     private void update_ratings() {
-        int fid = -1;
+        int fid;
         try {
             fid = this.recieved_data.getInt(JSON_fields.Request_data.file_qry_id);
         } catch (JSONException e) {
@@ -134,7 +134,7 @@ public class Request_handler extends Thread {
     }
 
     private void get_file_details() {
-        int fid = -1;
+        int fid;
 
         try {
             fid = this.recieved_data.getInt(JSON_fields.Request_data.file_qry_id);
@@ -150,10 +150,28 @@ public class Request_handler extends Thread {
         }
 
         Pampini_file a = Querry.get_file_by_id(fid);
+
+        if (a != null) try {
+            this.data_to_send.put("status", 0);
+            this.data_to_send.put(JSON_fields.To_send_data.file_details, a.get_JSON());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        else try {
+            this.data_to_send.put("status", 1);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            this.output_stream.writeUTF(this.data_to_send.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void get_user_details() {
-        int uid = -1;
+        int uid;
 
         try {
             uid = this.recieved_data.getInt(JSON_fields.Request_data.user_qry_id);
@@ -275,9 +293,9 @@ public class Request_handler extends Thread {
 
     //Execute request to add new file
     private void new_upload() {
-        String file_name = null;
-        long file_size = 0, packet_size;
-        int file_id, nsharer = 1, ndloader = 0, type = -1, no_packets = 0;
+        String file_name;
+        long file_size, packet_size;
+        int file_id, nsharer = 1, ndloader = 0, type, no_packets;
         java.util.Date curr = new java.util.Date();
         java.sql.Date upload_date = new java.sql.Date(curr.getTime());
         java.sql.Time upload_time = new java.sql.Time(curr.getTime());
@@ -314,7 +332,7 @@ public class Request_handler extends Thread {
 
     //Execute login request
     private void login() {
-        String phash = null;
+        String phash;
         try {
             phash = this.recieved_data.getString(JSON_fields.Request_data.phash);
         } catch (JSONException e1) {
@@ -334,7 +352,7 @@ public class Request_handler extends Thread {
     }
 
     private void get_files_by_user() {
-        int uid = -1;
+        int uid;
         try {
             uid = this.recieved_data.getInt(JSON_fields.Request_data.user_qry_id);
         } catch (JSONException e) {

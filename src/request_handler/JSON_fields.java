@@ -31,5 +31,6 @@ public class JSON_fields {
         public static final String partno = "partno";
         public static final String no_conn = "no_conn";
         public static final String user_details = "user_details";
+        public static final String file_details = "file_details";
     }
 }
