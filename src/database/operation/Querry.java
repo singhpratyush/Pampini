@@ -263,6 +263,7 @@ public class Querry {
     }
 
     public static Pampini_user get_user_by_id(int uid) {
+        Pampini_user a = null;
         try {
             Connection c = DriverManager.getConnection(config.jdbc, config.jdbc_username, config.jdbc_password);
             Statement stmt = c.createStatement();
@@ -272,7 +273,7 @@ public class Querry {
 
             ResultSet rs = stmt.executeQuery(sql);
 
-            return new Pampini_user(
+            a = new Pampini_user(
                     rs.getInt("uid"),
                     rs.getString("fname"),
                     rs.getString("lname"),
@@ -282,10 +283,43 @@ public class Querry {
                     rs.getInt("branchcode"),
                     rs.getInt("dpiccode")
             );
+            rs.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return a;
+    }
+
+
+    public static Pampini_file get_file_by_id(int fid) {
+        Pampini_file a = null;
+        try {
+            Connection c = DriverManager.getConnection(config.jdbc, config.jdbc_username, config.jdbc_password);
+            Statement stmt = c.createStatement();
+
+            String sql = "set search_path to file;\n" +
+                    "select * from files where fid = " + fid + ";";
+
+            ResultSet rs = stmt.executeQuery(sql);
+
+            a = new Pampini_file(
+                    rs.getInt("fname"),
+                    rs.getString("fname"),
+                    rs.getInt("uploaderid"),
+                    rs.getDate("udate"),
+                    rs.getTime("utime"),
+                    rs.getInt("nsharer"),
+                    rs.getInt("ndloader"),
+                    rs.getInt("ftype"),
+                    rs.getLong("filesize"),
+                    rs.getLong("packetSize"),
+                    rs.getInt("nopackets")
+            );
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return a;
     }
 }

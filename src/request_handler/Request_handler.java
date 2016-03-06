@@ -38,6 +38,7 @@ public class Request_handler extends Thread {
             this.response = this.input_stream.readUTF();
             this.recieved_data = new JSONObject(this.response);
             this.uid = this.recieved_data.getInt(JSON_fields.Request_data.uid);
+            this.data_to_send = new JSONObject();
             this.request_type = this.recieved_data.getInt(JSON_fields.Request_data.request_type);
         } catch (IOException e) {
             e.printStackTrace();
@@ -97,11 +98,36 @@ public class Request_handler extends Thread {
                 this.get_user_details();
                 break;
 
+            case 10:
+                //Get details by file id
+                this.get_file_details();
+                break;
         }
     }
 
+    private void get_file_details() {
+        int fid = -1;
+
+        try {
+            fid = this.recieved_data.getInt(JSON_fields.Request_data.file_qry_id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            try {
+                this.data_to_send.put("status", 1);
+                this.output_stream.writeUTF(this.data_to_send.toString());
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            return;
+        }
+
+        Pampini_file a = Querry.get_file_by_id(fid);
+    }
+
     private void get_user_details() {
-        int status = 0, uid = -1;
+        int uid = -1;
 
         try {
             uid = this.recieved_data.getInt(JSON_fields.Request_data.user_qry_id);
@@ -253,7 +279,6 @@ public class Request_handler extends Thread {
         no_packets = util.file_operation.get_number_packets(file_size);
         Pampini_file new_upload = new Pampini_file(file_id, file_name, this.uid, upload_date, upload_time, nsharer, ndloader, type, file_size, packet_size, no_packets);
         database.operation.Update.add_new_file(new_upload);
-        this.data_to_send = new JSONObject();
         try {
             this.data_to_send.put(JSON_fields.To_send_data.fid, file_id);
             this.data_to_send.put("status", 0);

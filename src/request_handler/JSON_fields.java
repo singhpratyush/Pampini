@@ -19,6 +19,7 @@ public class JSON_fields {
         public static final String search_param = "search_param";
         public static final String sort_type = "sort_type";
         public static final String user_qry_id = "user_qry_id";
+        public static final String file_qry_id = "file_qry_id";
     }
 
     public class To_send_data {
