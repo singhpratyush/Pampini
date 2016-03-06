@@ -144,7 +144,7 @@ public class Request_handler extends Thread {
             status = 1;
         }
         try {
-            this.data_to_send.append("status", status);
+            this.data_to_send.put("status", status);
             this.output_stream.writeUTF(this.data_to_send.toString());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -159,8 +159,8 @@ public class Request_handler extends Thread {
         try {
             int fid = this.recieved_data.getInt(JSON_fields.Request_data.file_id);
             JSONArray arr = this.recieved_data.getJSONArray(JSON_fields.Request_data.packet_nos);
-            this.data_to_send.append("file", Querry.get_host_for_packets(fid, arr));
-            this.data_to_send.append("status", 0);
+            this.data_to_send.put("file", Querry.get_host_for_packets(fid, arr));
+            this.data_to_send.put("status", 0);
             this.output_stream.writeUTF(this.data_to_send.toString());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -169,7 +169,7 @@ public class Request_handler extends Thread {
         }
 
         try {
-            this.data_to_send.append("status", 1);
+            this.data_to_send.put("status", 1);
             this.output_stream.writeUTF(this.data_to_send.toString());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -219,14 +219,14 @@ public class Request_handler extends Thread {
         } catch (JSONException e1) {
             e1.printStackTrace();
             try {
-                this.data_to_send.append("status", 1);
+                this.data_to_send.put("status", 1);
             } catch (JSONException e2) {
                 e2.printStackTrace();
             }
             return;
         }
         try {
-            this.data_to_send.append("status", (Querry.login(this.uid, phash) ? 0 : 1));
+            this.data_to_send.put("status", (Querry.login(this.uid, phash) ? 0 : 1));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -239,7 +239,7 @@ public class Request_handler extends Thread {
         } catch (JSONException e) {
             e.printStackTrace();
             try {
-                this.data_to_send.append("status", 1);
+                this.data_to_send.put("status", 1);
             } catch (JSONException e2) {
                 e2.printStackTrace();
             }
@@ -253,13 +253,13 @@ public class Request_handler extends Thread {
         JSONArray files = Querry.get_files_by_user(uid);
         if (files == null) {
             try {
-                this.data_to_send.append("status", 1);
+                this.data_to_send.put("status", 1);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         } else {
             try {
-                this.data_to_send.append("status", 0);
+                this.data_to_send.put("status", 0);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
