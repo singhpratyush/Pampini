@@ -134,13 +134,24 @@ public class Request_handler extends Thread {
 
     //Execute request that asks to mark that a packet has been downloaded
     private void mark_complete_packet_download() {
+        int status = 0;
         try {
             int fid = this.recieved_data.getInt(JSON_fields.Request_data.file_id);
             int packet_no = this.recieved_data.getInt(JSON_fields.Request_data.packet_no);
             Update.mark_packet_download(fid, packet_no, this.client_IP);
         } catch (JSONException e) {
             e.printStackTrace();
+            status = 1;
         }
+        try {
+            this.data_to_send.append("status", status);
+            this.output_stream.writeUTF(this.data_to_send.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     //Provide client a packet to download
@@ -148,13 +159,22 @@ public class Request_handler extends Thread {
         try {
             int fid = this.recieved_data.getInt(JSON_fields.Request_data.file_id);
             JSONArray arr = this.recieved_data.getJSONArray(JSON_fields.Request_data.packet_nos);
-
-            this.data_to_send = Querry.get_host_for_packets(fid, arr);
+            this.data_to_send.append("file", Querry.get_host_for_packets(fid, arr));
+            this.data_to_send.append("status", 0);
             this.output_stream.writeUTF(this.data_to_send.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException f) {
             f.printStackTrace();
+        }
+
+        try {
+            this.data_to_send.append("status", 1);
+            this.output_stream.writeUTF(this.data_to_send.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
