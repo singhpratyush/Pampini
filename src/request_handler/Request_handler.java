@@ -102,7 +102,32 @@ public class Request_handler extends Thread {
                 //Get details by file id
                 this.get_file_details();
                 break;
+
+            case 11:
+                //Update Ratings
+                this.update_ratings();
+                break;
         }
+    }
+
+    private void update_ratings() {
+        int fid = -1;
+        try {
+            fid = this.recieved_data.getInt(JSON_fields.Request_data.file_qry_id);
+        } catch (JSONException e) {
+            try {
+                this.data_to_send.put("status", 1);
+                this.output_stream.writeUTF(this.data_to_send.toString());
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            e.printStackTrace();
+            return;
+        }
+
+        int status = Update.update_ratings(fid) ? 0 : 1;
     }
 
     private void get_file_details() {

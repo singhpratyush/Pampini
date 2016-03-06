@@ -85,7 +85,7 @@ public class Update {
                     ");\n";
 
             operation = operation +
-                    "alter table files set nsharer = nsharer+1 where fid = " + fid + ";";
+                    "update table files set nsharer = nsharer+1 where fid = " + fid + ";";
 
             stmt.executeUpdate(operation);
             return true;
@@ -93,5 +93,21 @@ public class Update {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public static boolean update_ratings(int fid) {
+        try {
+            Connection c = DriverManager.getConnection(config.jdbc, config.jdbc_username, config.jdbc_password);
+            Statement stmt = c.createStatement();
+
+            String sql = "set search_path to file;/n" +
+                    "update table files set popularity = popularity + 1 where fid = " + fid + ";\n" +
+                    "update table users set karma = karma + 1 where uid in (select users.uid from files join users on users.uid = files.uploaderid where files.uploaderid = " + fid + ");";
+
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

@@ -217,7 +217,8 @@ public class Querry {
                     "phash          VARCHAR(225)    not null," +
                     "jbatch         char(4)         not null," +
                     "branchcode     char(2)         not null," +
-                    "dpiccode       integer         unique not NULL" +
+                    "dpiccode       integer         unique not NULL," +
+                    "karma          INTEGER         not null" +
                     ");";
 
             stmt.executeUpdate(sql);
