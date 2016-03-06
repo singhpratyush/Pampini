@@ -213,7 +213,6 @@ public class Request_handler extends Thread {
     }
 
     private void get_files_by_user() {
-        //Not complete
         int uid = -1;
         try {
             uid = this.recieved_data.getInt("uid_querried");
@@ -224,8 +223,31 @@ public class Request_handler extends Thread {
             } catch (JSONException e2) {
                 e2.printStackTrace();
             }
+            try {
+                this.output_stream.writeUTF(this.data_to_send.toString());
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
             return;
         }
         JSONArray files = Querry.get_files_by_user(uid);
+        if (files == null) {
+            try {
+                this.data_to_send.append("status", 1);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                this.data_to_send.append("status", 0);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            this.output_stream.writeUTF(this.data_to_send.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
