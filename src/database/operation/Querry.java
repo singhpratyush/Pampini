@@ -1,6 +1,7 @@
 package database.operation;
 
 import database.definition.Pampini_file;
+import database.definition.Pampini_user;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -255,6 +256,33 @@ public class Querry {
             rs.close();
 
             return new JSONArray(files);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Pampini_user get_user_by_id(int uid) {
+        try {
+            Connection c = DriverManager.getConnection(config.jdbc, config.jdbc_username, config.jdbc_password);
+            Statement stmt = c.createStatement();
+
+            String sql = "set search_path to file;\n" +
+                    "select * from users where uid = " + uid + ";";
+
+            ResultSet rs = stmt.executeQuery(sql);
+
+            return new Pampini_user(
+                    rs.getInt("uid"),
+                    rs.getString("fname"),
+                    rs.getString("lname"),
+                    rs.getString("sex").charAt(0),
+                    "",
+                    rs.getInt("jbatch"),
+                    rs.getInt("branchcode"),
+                    rs.getInt("dpiccode")
+            );
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

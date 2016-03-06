@@ -5,6 +5,7 @@
 package request_handler;
 
 import database.definition.Pampini_file;
+import database.definition.Pampini_user;
 import database.operation.Querry;
 import database.operation.Update;
 import org.json.JSONArray;
@@ -89,7 +90,55 @@ public class Request_handler extends Thread {
             case 8:
                 //Get all files by a user
                 this.get_files_by_user();
+                break;
 
+            case 9:
+                //Get user details
+                this.get_user_details();
+                break;
+
+        }
+    }
+
+    private void get_user_details() {
+        int status = 0, uid = -1;
+
+        try {
+            uid = this.recieved_data.getInt(JSON_fields.Request_data.user_qry_id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            try {
+                this.data_to_send.put("status", 1);
+                this.output_stream.writeUTF(this.data_to_send.toString());
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            return;
+        }
+
+        Pampini_user a = Querry.get_user_by_id(uid);
+
+        if (a == null) {
+            try {
+                this.data_to_send.put("status", 1);
+                this.output_stream.writeUTF(this.data_to_send.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            this.data_to_send.put("status", 0);
+            this.data_to_send.put(JSON_fields.To_send_data.user_details, a.get_JSON());
+            this.output_stream.writeUTF(this.data_to_send.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -242,7 +291,7 @@ public class Request_handler extends Thread {
     private void get_files_by_user() {
         int uid = -1;
         try {
-            uid = this.recieved_data.getInt("uid_querried");
+            uid = this.recieved_data.getInt(JSON_fields.Request_data.user_qry_id);
         } catch (JSONException e) {
             e.printStackTrace();
             try {
@@ -258,18 +307,15 @@ public class Request_handler extends Thread {
             return;
         }
         JSONArray files = Querry.get_files_by_user(uid);
-        if (files == null) {
-            try {
-                this.data_to_send.put("status", 1);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                this.data_to_send.put("status", 0);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        if (files == null) try {
+            this.data_to_send.put("status", 1);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        else try {
+            this.data_to_send.put("status", 0);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
         try {
             this.output_stream.writeUTF(this.data_to_send.toString());

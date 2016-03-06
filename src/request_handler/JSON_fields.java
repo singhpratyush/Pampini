@@ -18,6 +18,7 @@ public class JSON_fields {
         public static final String packet_nos = "packet_nos";
         public static final String search_param = "search_param";
         public static final String sort_type = "sort_type";
+        public static final String user_qry_id = "user_qry_id";
     }
 
     public class To_send_data {
@@ -28,5 +29,6 @@ public class JSON_fields {
         public static final String uid = "uid";
         public static final String partno = "partno";
         public static final String no_conn = "no_conn";
+        public static final String user_details = "user_details";
     }
 }
