@@ -40,11 +40,10 @@ public class Request_handler extends Thread {
             this.uid = this.recieved_data.getInt(JSON_fields.Request_data.uid);
             this.data_to_send = new JSONObject();
             this.request_type = this.recieved_data.getInt(JSON_fields.Request_data.request_type);
-        } catch (IOException e) {
+        } catch (IOException | JSONException e) {
             e.printStackTrace();
-        } catch (JSONException f) {
-            f.printStackTrace();
         }
+
     }
 
     //What to do when thread starts
@@ -118,9 +117,7 @@ public class Request_handler extends Thread {
             try {
                 this.data_to_send.put("status", 1);
                 this.output_stream.writeUTF(this.data_to_send.toString());
-            } catch (JSONException e1) {
-                e1.printStackTrace();
-            } catch (IOException e1) {
+            } catch (JSONException | IOException e1) {
                 e1.printStackTrace();
             }
             e.printStackTrace();
@@ -146,9 +143,7 @@ public class Request_handler extends Thread {
             try {
                 this.data_to_send.put("status", 1);
                 this.output_stream.writeUTF(this.data_to_send.toString());
-            } catch (JSONException e1) {
-                e1.printStackTrace();
-            } catch (IOException e1) {
+            } catch (JSONException | IOException e1) {
                 e1.printStackTrace();
             }
             return;
@@ -167,9 +162,7 @@ public class Request_handler extends Thread {
             try {
                 this.data_to_send.put("status", 1);
                 this.output_stream.writeUTF(this.data_to_send.toString());
-            } catch (JSONException e1) {
-                e1.printStackTrace();
-            } catch (IOException e1) {
+            } catch (JSONException | IOException e1) {
                 e1.printStackTrace();
             }
             return;
@@ -181,20 +174,17 @@ public class Request_handler extends Thread {
             try {
                 this.data_to_send.put("status", 1);
                 this.output_stream.writeUTF(this.data_to_send.toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (JSONException | IOException e) {
                 e.printStackTrace();
             }
+            return;
         }
 
         try {
             this.data_to_send.put("status", 0);
             this.data_to_send.put(JSON_fields.To_send_data.user_details, a.get_JSON());
             this.output_stream.writeUTF(this.data_to_send.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (JSONException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -218,18 +208,14 @@ public class Request_handler extends Thread {
             this.data_to_send.put("status", 0);
             this.output_stream.writeUTF(this.data_to_send.toString());
             return;
-        } catch (JSONException e) {
+        } catch (JSONException | IOException e) {
             e.printStackTrace();
-        } catch (IOException f) {
-            f.printStackTrace();
         }
 
         try {
             this.data_to_send.put("status", 1);
             this.output_stream.writeUTF(this.data_to_send.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (JSONException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -242,10 +228,8 @@ public class Request_handler extends Thread {
             JSONArray files = Querry.get_downloadable_files(page_number, sort_type);
             this.data_to_send.put(JSON_fields.To_send_data.downloadable_files, files);
             this.output_stream.writeUTF(this.data_to_send.toString());
-        } catch (JSONException e) {
+        } catch (JSONException | IOException e) {
             e.printStackTrace();
-        } catch (IOException f) {
-            f.printStackTrace();
         }
     }
 
@@ -263,9 +247,7 @@ public class Request_handler extends Thread {
         try {
             this.data_to_send.put("status", status);
             this.output_stream.writeUTF(this.data_to_send.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (JSONException | IOException e) {
             e.printStackTrace();
         }
 
@@ -279,18 +261,14 @@ public class Request_handler extends Thread {
             this.data_to_send.put("file", Querry.get_host_for_packets(fid, arr));
             this.data_to_send.put("status", 0);
             this.output_stream.writeUTF(this.data_to_send.toString());
-        } catch (JSONException e) {
+        } catch (JSONException | IOException e) {
             e.printStackTrace();
-        } catch (IOException f) {
-            f.printStackTrace();
         }
 
         try {
             this.data_to_send.put("status", 1);
             this.output_stream.writeUTF(this.data_to_send.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (JSONException | IOException e) {
             e.printStackTrace();
         }
     }
