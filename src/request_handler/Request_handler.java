@@ -215,11 +215,22 @@ public class Request_handler extends Thread {
             int sort_type = this.recieved_data.getInt(JSON_fields.Request_data.sort_type);
             JSONArray search_results = Querry.search(search_parameter, sort_type);
             this.data_to_send.put(JSON_fields.To_send_data.downloadable_files, search_results);
+            this.data_to_send.put("status", 0);
             this.output_stream.writeUTF(this.data_to_send.toString());
+            return;
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException f) {
             f.printStackTrace();
+        }
+
+        try {
+            this.data_to_send.put("status", 1);
+            this.output_stream.writeUTF(this.data_to_send.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
