@@ -191,7 +191,13 @@ public class Request_handler extends Thread {
             file_size = this.recieved_data.getLong(JSON_fields.Request_data.file_size);
             type = this.recieved_data.getInt(JSON_fields.Request_data.file_type);
         } catch (JSONException e) {
+            try {
+                this.data_to_send.put("status", 1);
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            }
             e.printStackTrace();
+            return;
         }
         file_id = util.file_operation.get_new_file_id();
         packet_size = util.file_operation.get_packet_size(file_size);
@@ -201,6 +207,7 @@ public class Request_handler extends Thread {
         this.data_to_send = new JSONObject();
         try {
             this.data_to_send.put(JSON_fields.To_send_data.fid, file_id);
+            this.data_to_send.put("status", 0);
         } catch (JSONException e) {
             e.printStackTrace();
         }
