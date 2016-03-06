@@ -81,14 +81,13 @@ public class Querry {
             ArrayList<JSONObject> arrlist = new ArrayList<JSONObject>();
 
             int currpos = 0;
-            while (rs.next()) {
+            while (rs.next() && currpos >= (page_number + 1) * 5) {
                 JSONObject temp = get_file_by_id(rs.getInt("fid")).get_JSON();
                 if (currpos >= page_number * 5)
                     arrlist.add(temp);
                 currpos++;
-                if (currpos >= (page_number + 1) * 5)
-                    break;
             }
+            rs.close();
             arr = new JSONArray(arrlist);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -140,7 +139,26 @@ public class Querry {
 
     //Get JSON array of files matching search_parameter
     public static JSONArray search(String search_parameter, int sort_type) {
-        return null;
+        search_parameter = "'%" + search_parameter.replace(' ', '%') + "%'";
+        JSONArray arr = null;
+        try {
+            Connection c = DriverManager.getConnection(config.jdbc, config.jdbc_username, config.jdbc_password);
+            Statement stmt = c.createStatement();
+
+            String sql = "set search_path to file;\n" +
+                    "select fid from files where fname like " + search_parameter + ";";
+
+            ResultSet rs = stmt.executeQuery(sql);
+
+            ArrayList<JSONObject> obs = new ArrayList<>();
+            for (int i = 0; i < 5 && rs.next(); i++)
+                obs.add(get_file_by_id(rs.getInt("fid")).get_JSON());
+
+            arr = new JSONArray(obs);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return arr;
     }
 
     //Check for integrity of database and modify as needed

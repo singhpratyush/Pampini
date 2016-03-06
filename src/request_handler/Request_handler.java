@@ -128,6 +128,12 @@ public class Request_handler extends Thread {
         }
 
         int status = Update.update_ratings(fid) ? 0 : 1;
+
+        try {
+            this.data_to_send.put("status", status);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void get_file_details() {
