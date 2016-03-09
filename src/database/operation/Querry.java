@@ -139,15 +139,26 @@ public class Querry {
 
     //Get JSON array of files matching search_parameter
     public static JSONArray search(String search_parameter, int sort_type) {
-        search_parameter = "'%" + search_parameter.replace(' ', '%') + "%'";
+        ArrayList<String> search_params = new ArrayList<String>();
+
+        for (String i : search_parameter.split(" "))
+            search_params.add(i);
+
         JSONArray arr = null;
         try {
             Connection c = DriverManager.getConnection(config.jdbc, config.jdbc_username, config.jdbc_password);
             Statement stmt = c.createStatement();
 
             String sql = "set search_path to file;\n" +
-                    "select fid from files where fname like " + search_parameter + ";";
+                    "select fid from files where ";
 
+            for (int i = 0; i < search_params.size(); i++) {
+                sql = sql + "fname like %" + search_params.get(i) + "% ";
+                if (i != search_params.size() - 1)
+                    sql = sql + "or ";
+            }
+
+            sql = sql + ";";
             ResultSet rs = stmt.executeQuery(sql);
 
             ArrayList<JSONObject> obs = new ArrayList<>();
